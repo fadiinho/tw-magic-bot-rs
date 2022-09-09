@@ -1,9 +1,9 @@
 use std::fmt;
-use twitch_irc::message::{ServerMessage, PrivmsgMessage};
+use twitch_irc::message::{PrivmsgMessage, ServerMessage};
 
 pub struct Command {
     name: String,
-    args: Option<Vec<String>>
+    args: Option<Vec<String>>,
 }
 
 impl fmt::Display for Command {
@@ -16,14 +16,13 @@ impl fmt::Display for Command {
             args.unwrap().iter().for_each(|arg| {
                 match write!(f, "{} ", arg) {
                     Ok(_arg) => _arg,
-                    Err(error) => panic!("Something went wrong while iterating args. {:?}", error)
+                    Err(error) => panic!("Something went wrong while iterating args. {:?}", error),
                 };
             });
         }
 
         Ok(())
     }
-     
 }
 
 fn parse_command(message: &PrivmsgMessage) -> Option<Command> {
@@ -38,21 +37,20 @@ fn parse_command(message: &PrivmsgMessage) -> Option<Command> {
             args.push(arg.to_owned());
         }
     });
-   
+
     if command.is_empty() {
         return None;
     }
 
     Some(Command {
         name: command.to_owned(),
-        args: Some(args)
+        args: Some(args),
     })
 }
 
 pub fn parse_message(message: &ServerMessage) -> Option<Command> {
     match message {
         ServerMessage::Privmsg(msg) => parse_command(msg),
-        _ => None
+        _ => None,
     }
 }
-
